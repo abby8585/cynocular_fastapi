@@ -1,0 +1,114 @@
+body {
+  font-family: 'Lobster', cursive;
+  background-color: white; /* Background color set to white */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+  margin: 0;
+  position: relative; /* Allows absolute positioning within the body */
+}
+
+/* Header Styling */
+header {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px; /* Ensures space for the login icon on the far-right */
+  display: flex;
+  align-items: center;
+  font-size: 2rem;
+  color: skyblue;
+  /* Additional flex properties for alignment */
+  justify-content: space-between;
+}
+
+/* Binocular Icon Styling */
+#binocular-icon {
+  position: absolute;
+  top: -20px; /* Adjusts the icon to overlap with the first letter */
+  left: 0;
+  width: 160px;
+  height: 160px;
+}
+
+/* Header Text Styling */
+.header-text {
+  padding-left: 50px; /* Space for the binocular icon */
+}
+
+/* Login Icon Styling */
+#login-icon {
+  position: absolute;
+  top: 0;
+  right: 0; /* Positioned at the far-right of the header */
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+}
+
+/* Input Container */
+.input-container {
+  background-color: rgb(194, 214, 233); /* Prompt background color set to sky blue */
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 10in; /* Fixed width of 10 inches */
+  max-width: 100%; /* Ensure responsiveness */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 80px 0 20px; /* Margin adjusted to accommodate header */
+}
+
+/* Input Prompt Styling */
+.input-container .input-prompt {
+  width: 100%;
+  margin: 10px 0;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white; /* Input area background color set to white */
+  resize: vertical; /* Allows vertical resizing */
+}
+
+/* File Upload Styles */
+.file-upload-container {
+  width: 100%;
+  padding: 20px;
+  text-align: center;
+  margin: 10px 0;
+  position: relative;
+  cursor: pointer;
+  background-color: #f9f9f9; /* Slightly different background for drag area */
+}
+
+.file-upload-label {
+  font-size: 1rem;
+  color: #777;
+}
+
+.file-upload-input {
+  display: none;
+}
+
+.file-upload-container.dragover {
+  border-color: gray;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Button Styling */
+.input-container button {
+  background-color: gray;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.input-container button:hover {
+  background-color: darkgray;
+}
