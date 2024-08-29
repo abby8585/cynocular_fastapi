@@ -1,0 +1,1 @@
+# cynocular_fastapi
