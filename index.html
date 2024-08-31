@@ -1,139 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cynocular</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cynocular</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header>
-    <img src="{{ url_for('static', filename='binocular-icon.png') }}" alt="Binocular Icon" id="binocular-icon">
-    <div class="header-text"></div>
-    <img src="{{ url_for('static', filename='login-icon.png') }}" alt="Login Icon" id="login-icon">
-  </header>
-  
-  <!-- Hidden Sign In Form -->
-  <div class="signin-container" id="signin-form" style="display: none;">
-    <h2>Sign In</h2>
-    <input type="text" placeholder="Username or Email">
-    <input type="password" placeholder="Password">
-    <div class="auth-buttons">
-      <button id="signin-btn">Sign In</button>
-      <button id="register-btn">Register</button>
+    <header>
+        <img src="/static/binocular-icon.png" alt="Binocular Icon" id="binocular-icon">
+        <div class="header-text"></div>
+        <img src="/static/login-icon.png" alt="Login Icon" id="login-icon">
+    </header>
+
+    <!-- Hidden Sign In Form -->
+    <div class="signin-container" id="signin-form" style="display: none;">
+        <h2>Sign In</h2>
+        <input type="text" placeholder="Username or Email">
+        <input type="password" placeholder="Password">
+        <div class="auth-buttons">
+            <button id="signin-btn">Sign In</button>
+            <button id="register-btn">Register</button>
+        </div>
     </div>
-  </div>
-  
-  <!-- Input and Drag-and-Drop Container -->
-  <div class="input-container">
-    <textarea id="input-text" placeholder="Enter IP, Hash, URL, or other queries" class="input-prompt" rows="4"></textarea>
-    <div class="file-upload-container">
-      <input type="file" id="file-upload" class="file-upload-input">
-      <label for="file-upload" class="file-upload-label">Choose files or drag them here</label>
+
+    <!-- Input and Drag-and-Drop Container -->
+    <div class="input-container">
+        <textarea id="input-text" placeholder="Enter IP, Hash, URL, or other queries" class="input-prompt" rows="4"></textarea>
+        <div class="file-upload-container">
+            <input type="file" id="file-upload" class="file-upload-input">
+            <label for="file-upload" class="file-upload-label">Choose files or drag them here</label>
+        </div>
+        <button id="submit-btn">Submit</button>
     </div>
-    <button id="submit-btn">Submit</button>
-  </div>
 
-  <!-- Results Section -->
-  <div id="results">
-    <h2>Results</h2>
-    <div id="gpt-result">
-      <h3>GPT-4 Result:</h3>
-      <pre id="gpt-result-text"></pre>
+    <!-- Results Section -->
+    <div id="results" class="results-container">
+        <h2></h2>
+        <!-- Dynamic content will be loaded here by React -->
     </div>
-    <div id="vt-scan-result">
-      <h3>VirusTotal Scan Result:</h3>
-      <pre id="vt-scan-result-text"></pre>
-      <h3>VirusTotal Scan Summary:</h3>
-      <p id="vt-scan-summary-text"></p>
-    </div>
-    <div id="vt-dns-result">
-      <h3>VirusTotal DNS Result:</h3>
-      <pre id="vt-dns-result-text"></pre>
-      <h3>VirusTotal DNS Summary:</h3>
-      <p id="vt-dns-summary-text"></p>
-    </div>
-    <div id="upload-result">
-      <h3>File Upload Result:</h3>
-      <pre id="upload-result-text"></pre>
-    </div>
-    <div id="final-summary">
-      <h3>Final Summary:</h3>
-      <pre id="final-summary-text"></pre>
-    </div>
-  </div>
 
-  <script>
-    // Toggle sign-in form visibility
-    document.getElementById('login-icon').addEventListener('click', function() {
-      var form = document.getElementById('signin-form');
-      if (form.style.display === 'none' || form.style.display === '') {
-        form.style.display = 'block';
-      } else {
-        form.style.display = 'none';
-      }
-    });
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div> <!-- React will mount the app component here -->
 
-    // Drag-and-Drop File Upload
-    const fileInput = document.getElementById('file-upload');
-    const fileLabel = document.querySelector('.file-upload-label');
-    const inputContainer = document.querySelector('.file-upload-container');
+    <!-- React and Babel scripts -->
+    <script src="/static/react/umd/react.production.min.js"></script>
+    <script src="/static/react-dom/umd/react-dom.production.min.js"></script>
+    <script src="/static/babel.min.js"></script>
 
-    inputContainer.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      fileLabel.classList.add('dragover');
-    });
-
-    inputContainer.addEventListener('dragleave', () => {
-      fileLabel.classList.remove('dragover');
-    });
-
-    inputContainer.addEventListener('drop', (e) => {
-      e.preventDefault();
-      fileLabel.classList.remove('dragover');
-      fileInput.files = e.dataTransfer.files; // Assign dropped files to input
-    });
-
-    // Handle Submit Button Click
-    document.getElementById('submit-btn').addEventListener('click', async () => {
-      const text = document.getElementById('input-text').value;
-
-      // Handle file upload
-      const file = fileInput.files[0];
-      if (file) {
-        const formData = new FormData();
-        formData.append('file', file);
-
-        try {
-          const uploadResponse = await fetch('/upload', {
-            method: 'POST',
-            body: formData,
-          });
-          const uploadData = await uploadResponse.json();
-          document.getElementById('upload-result-text').textContent = JSON.stringify(uploadData, null, 2);
-          document.getElementById('final-summary-text').textContent = uploadData.metadata_summary || 'No summary available';
-        } catch (error) {
-          console.error('Error uploading file:', error);
-        }
-      }
-
-      // Handle text input
-      if (text) {
-        try {
-          const gptResponse = await fetch('/gpt', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text }),
-          });
-          const gptData = await gptResponse.json();
-          document.getElementById('gpt-result-text').textContent = gptData.result || 'No result available';
-        } catch (error) {
-          console.error('Error fetching GPT result:', error);
-        }
-      }
-    });
-  </script>
-  <script type="module" src="{{ url_for('static', filename='App.js') }}"></script>
+    <!-- App script - React components -->
+    <script type="text/babel" src="/static/App.js"></script>
 </body>
 </html>
